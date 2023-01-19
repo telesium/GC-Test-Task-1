@@ -6,7 +6,8 @@ namespace ClassLibrary1
 {
     public class NumericUpDownLight : Control
     {
-        private int _value;
+        private int _value = 0;
+        private EventHandler _valueChanged = null;
         
         private TextBox textBox = new TextBox();
         private Button buttonUp = new Button();
@@ -17,8 +18,6 @@ namespace ClassLibrary1
             this.Width = 200;
             this.Height = 30;
             
-            this._value = 0;
-
             this.buttonUp.Parent = this;
             this.buttonUp.Width = 30;
             this.buttonUp.Height = 15;
@@ -37,7 +36,7 @@ namespace ClassLibrary1
 
             this.textBox.Text = this._value.ToString();
             this.textBox.Font = new Font("Arial", 12, FontStyle.Regular);
-            this.textBox.Width = 200;
+            this.textBox.Width = 170;
             this.textBox.Height = 29;
             this.textBox.Multiline = true;
             this.textBox.ReadOnly = true;
@@ -48,6 +47,9 @@ namespace ClassLibrary1
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+            e.Graphics.DrawRectangle(
+                new Pen(Color.Gray, 2),
+                ClientRectangle);
         }
 
         private void buttonUp_Paint(object sender, PaintEventArgs e)
@@ -78,12 +80,22 @@ namespace ClassLibrary1
         {
             this._value++;
             this.textBox.Text = this._value.ToString();
+
+            if (_valueChanged != null)
+            {
+                _valueChanged(sender, e);
+            }
         }
 
         private void DecrementValue(object sender, EventArgs e)
         {
             this._value--;
             this.textBox.Text = this._value.ToString();
+
+            if (_valueChanged != null)
+            {
+                _valueChanged(sender, e);
+            }
         }
     }
 }
