@@ -36,6 +36,7 @@ namespace ClassLibrary1
             this.buttonDown.Click += new EventHandler(this.DecrementValue);
 
             this.textBox.Text = this._value.ToString();
+            this.textBox.Font = new Font("Arial", 12, FontStyle.Regular);
             this.textBox.Width = 200;
             this.textBox.Height = 29;
             this.textBox.Multiline = true;
