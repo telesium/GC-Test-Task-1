@@ -10,7 +10,7 @@ namespace ClassLibrary1
 {
     class CustomTextBox : IControlItem
     {
-        private bool _ShouldRepaint = false;
+        private bool _shouldRepaint = false;
 
         public Rectangle ItemRectangle { get; set; }
 
@@ -40,29 +40,37 @@ namespace ClassLibrary1
 
         public void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.FillRectangle(
-                new SolidBrush(Color.White),
-                ItemRectangle);
+            using (var brush = new SolidBrush(Color.White))
+            {
+                e.Graphics.FillRectangle(brush,
+                    ItemRectangle);
+            }
 
-            e.Graphics.DrawString(Text,
-                new Font("Arial", 14, FontStyle.Regular),
-                new SolidBrush(Color.Black),
-                ItemRectangle,
-                ConvertTextAlignToTextStyle());
+            using (var brush = new SolidBrush(Color.White))
+            using (var font = new Font("Arial", 14, FontStyle.Regular))
+            {
+                e.Graphics.DrawString(Text,
+                    font,
+                    brush,
+                    ItemRectangle,
+                    ConvertTextAlignToTextStyle());
+            }
 
-            e.Graphics.DrawRectangle(
-                new Pen(Color.Gray, 2),
-                ItemRectangle);
+            using (var pen = new Pen(Color.Gray, 2))
+            {
+                e.Graphics.DrawRectangle(pen,
+                    ItemRectangle);
+            }
         }
 
         public bool HasToRepaint()
         {
-            return _ShouldRepaint;
+            return _shouldRepaint;
         }
 
         public void OnRepainted()
         {
-            _ShouldRepaint = false;
+            _shouldRepaint = false;
         }
     }
 }
