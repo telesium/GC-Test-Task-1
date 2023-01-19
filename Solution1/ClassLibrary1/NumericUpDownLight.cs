@@ -69,7 +69,7 @@ namespace ClassLibrary1
             e.Graphics.FillPolygon(
                 new SolidBrush(Color.Black), new Point[] 
                 { 
-                    new Point(11, 4), 
+                    new Point(11, 3), 
                     new Point(6, 9), 
                     new Point(16, 9) 
                 }
@@ -81,9 +81,9 @@ namespace ClassLibrary1
             e.Graphics.FillPolygon(
                 new SolidBrush(Color.Black), new Point[]
                 {
-                    new Point(11, 6),
-                    new Point(6, 1),
-                    new Point(16, 1),
+                    new Point(11, 9),
+                    new Point(6, 4),
+                    new Point(16, 4),
                 }
             );
         }
