@@ -25,6 +25,7 @@ namespace ClassLibrary1
             this.buttonUp.Top = 1;
             this.buttonUp.Left = 169;
             this.buttonUp.Paint += new PaintEventHandler(this.buttonUp_Paint);
+            this.buttonUp.Click += new EventHandler(this.IncrementValue);
 
             this.buttonDown.Parent = this;
             this.buttonDown.Width = 30;
@@ -32,6 +33,7 @@ namespace ClassLibrary1
             this.buttonDown.Top = 14;
             this.buttonDown.Left = 169;
             this.buttonDown.Paint += new PaintEventHandler(this.buttonDown_Paint);
+            this.buttonDown.Click += new EventHandler(this.DecrementValue);
 
             this.textBox.Text = this._value.ToString();
             this.textBox.Width = 200;
@@ -69,6 +71,18 @@ namespace ClassLibrary1
                     new Point(16, 1),
                 }
             );
+        }
+
+        private void IncrementValue(object sender, EventArgs e)
+        {
+            this._value++;
+            this.textBox.Text = this._value.ToString();
+        }
+
+        private void DecrementValue(object sender, EventArgs e)
+        {
+            this._value--;
+            this.textBox.Text = this._value.ToString();
         }
     }
 }
