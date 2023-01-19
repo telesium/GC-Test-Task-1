@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -9,11 +10,88 @@ namespace ClassLibrary1
         private int _value = 0;
         private EventHandler _valueChanged = null;
         private HorizontalAlignment _textAlign = HorizontalAlignment.Left;
-        private Color MouseHoverBackColor = Color.Blue;
+        private Color _mouseHoverBackColor = Color.Blue;
         
         private TextBox textBox = new TextBox();
         private Button buttonUp = new Button();
         private Button buttonDown = new Button();
+
+        [Browsable(false)]
+        public override string Text { get; set; }
+
+        [
+        Category("Data"),
+        Description("Specifies the value of the control.")
+        ]
+        public int Value
+        {
+
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value;
+                this.textBox.Text = this._value.ToString();
+            }
+        }
+
+        [
+        Category("Property Changed"),
+        
+        
+        Description("ValueChanged event triggers after the value was changed")
+        ]
+        public event EventHandler ValueChanged
+        {
+
+            add
+            {
+                _valueChanged = value;
+            }
+            remove
+            {
+                _valueChanged = null;
+            }
+        }
+
+        [
+        Category("Appearance"),
+        Description("Specifies the alignment of the text")
+        ]
+        public HorizontalAlignment TextAlign
+        {
+
+            get
+            {
+                return _textAlign;
+            }
+            set
+            {
+                _textAlign = value;
+                this.textBox.TextAlign = _textAlign;
+            }
+        }
+
+        [
+        Category("Appearance"),
+        Description("Specifies the mouse hover back color of the buttons")
+        ]
+        public Color MouseHoverBackColor
+        {
+
+            get
+            {
+                return _mouseHoverBackColor;
+            }
+            set
+            {
+                _mouseHoverBackColor = value;
+                this.buttonUp.FlatAppearance.MouseOverBackColor = _mouseHoverBackColor;
+                this.buttonDown.FlatAppearance.MouseOverBackColor = _mouseHoverBackColor;
+            }
+        }
 
         public NumericUpDownLight()
         {
@@ -30,7 +108,7 @@ namespace ClassLibrary1
             this.buttonUp.FlatStyle = FlatStyle.Flat;
             this.buttonUp.FlatAppearance.BorderColor = Color.Gray;
             this.buttonUp.FlatAppearance.BorderSize = 1;
-            this.buttonUp.FlatAppearance.MouseOverBackColor = MouseHoverBackColor;
+            this.buttonUp.FlatAppearance.MouseOverBackColor = _mouseHoverBackColor;
 
 
             this.buttonDown.Parent = this;
@@ -43,7 +121,7 @@ namespace ClassLibrary1
             this.buttonDown.FlatStyle = FlatStyle.Flat;
             this.buttonDown.FlatAppearance.BorderColor = Color.Gray;
             this.buttonDown.FlatAppearance.BorderSize = 1;
-            this.buttonDown.FlatAppearance.MouseOverBackColor = MouseHoverBackColor;
+            this.buttonDown.FlatAppearance.MouseOverBackColor = _mouseHoverBackColor;
 
             this.textBox.Text = this._value.ToString();
             this.textBox.Font = new Font("Arial", 12, FontStyle.Regular);
@@ -106,7 +184,7 @@ namespace ClassLibrary1
 
             if (_valueChanged != null)
             {
-                _valueChanged(sender, e);
+                _valueChanged(this, EventArgs.Empty);
             }
         }
 
@@ -117,7 +195,7 @@ namespace ClassLibrary1
 
             if (_valueChanged != null)
             {
-                _valueChanged(sender, e);
+                _valueChanged(this, EventArgs.Empty);
             }
         }
     }

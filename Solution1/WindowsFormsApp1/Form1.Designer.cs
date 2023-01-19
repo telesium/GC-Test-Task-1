@@ -34,11 +34,15 @@ namespace WindowsFormsApp1
             // 
             // numericUpDownLight1
             // 
-            this.numericUpDownLight1.Location = new System.Drawing.Point(296, 167);
+            this.numericUpDownLight1.Location = new System.Drawing.Point(283, 185);
+            this.numericUpDownLight1.MouseHoverBackColor = System.Drawing.Color.CornflowerBlue;
             this.numericUpDownLight1.Name = "numericUpDownLight1";
             this.numericUpDownLight1.Size = new System.Drawing.Size(200, 30);
             this.numericUpDownLight1.TabIndex = 0;
             this.numericUpDownLight1.Text = "numericUpDownLight1";
+            this.numericUpDownLight1.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.numericUpDownLight1.Value = 10;
+            this.numericUpDownLight1.ValueChanged += new System.EventHandler(this.form_valueChanged);
             // 
             // Form1
             // 

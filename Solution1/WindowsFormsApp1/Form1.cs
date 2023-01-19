@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClassLibrary1;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,11 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
+        }
+
+        private void form_valueChanged(object sender, EventArgs e)
+        {
+            MessageBox.Show("Value changed");
         }
     }
 }
