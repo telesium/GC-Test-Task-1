@@ -14,6 +14,6 @@ namespace ClassLibrary1
 
         void OnRepainted();
 
-        void OnPaint(Graphics graphics);
+        void OnPaint(PaintEventArgs e);
     }
 }

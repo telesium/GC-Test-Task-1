@@ -10,9 +10,9 @@ namespace ClassLibrary1
 {
     public class CustomButton : IControlItem
     {
-        private bool shouldRepaint = false;
+        private bool _ShouldRepaint = false;
 
-        private Color CurrentBackgroundColor;
+        private Color _CurrentBackgroundColor;
 
         public Rectangle ItemRectangle { get; set; }
 
@@ -26,36 +26,36 @@ namespace ClassLibrary1
 
         public CustomButton()
         {
-            this.CurrentBackgroundColor = MainBackgroundColor;
+            _CurrentBackgroundColor = MainBackgroundColor;
         }
 
         public void OnMouseMove(MouseEventArgs e)
         {
-            var oldBackground = CurrentBackgroundColor;
+            var oldBackground = _CurrentBackgroundColor;
 
             if (ItemRectangle.Contains(e.Location))
             {
-                CurrentBackgroundColor = HoverBackgroundColor;
+                _CurrentBackgroundColor = HoverBackgroundColor;
             }
             else
             {
-                CurrentBackgroundColor = MainBackgroundColor;
+                _CurrentBackgroundColor = MainBackgroundColor;
             }
 
-            if (oldBackground != CurrentBackgroundColor)
+            if (oldBackground != _CurrentBackgroundColor)
             {
-                shouldRepaint = true;
+                _ShouldRepaint = true;
             }
         }
 
         public void OnMouseLeave(EventArgs e) 
         {
-            var oldBackground = CurrentBackgroundColor;
-            CurrentBackgroundColor = MainBackgroundColor;
+            var oldBackground = _CurrentBackgroundColor;
+            _CurrentBackgroundColor = MainBackgroundColor;
 
-            if (oldBackground != CurrentBackgroundColor)
+            if (oldBackground != _CurrentBackgroundColor)
             {
-                shouldRepaint = true;
+                _ShouldRepaint = true;
             }
         }
 
@@ -67,13 +67,13 @@ namespace ClassLibrary1
             }
         }
 
-        public void OnPaint(Graphics graphics)
+        public void OnPaint(PaintEventArgs e)
         {
-            graphics.FillRectangle(
-                new SolidBrush(CurrentBackgroundColor),
+            e.Graphics.FillRectangle(
+                new SolidBrush(_CurrentBackgroundColor),
                 ItemRectangle);
 
-            graphics.DrawString(Text,
+            e.Graphics.DrawString(Text,
                 new Font("Arial", 7, FontStyle.Regular),
                 new SolidBrush(Color.Black),
                 ItemRectangle,
@@ -82,19 +82,19 @@ namespace ClassLibrary1
                     Alignment = StringAlignment.Center
                 });
 
-            graphics.DrawRectangle(
+            e.Graphics.DrawRectangle(
                 new Pen(Color.Gray, 2),
                 ItemRectangle);
         }
 
         public bool HasToRepaint()
         {
-            return shouldRepaint;
+            return _ShouldRepaint;
         }
 
         public void OnRepainted()
         {
-            shouldRepaint = false;
+            _ShouldRepaint = false;
         }
     }
 }
