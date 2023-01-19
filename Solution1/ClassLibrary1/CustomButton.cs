@@ -75,7 +75,7 @@ namespace ClassLibrary1
                     ItemRectangle);
             }
 
-            using (var brush = new SolidBrush(_currentBackgroundColor))
+            using (var brush = new SolidBrush(Color.Black))
             using (var font = new Font("Arial", 7, FontStyle.Regular))
             {
                 e.Graphics.DrawString(Text, font, brush,

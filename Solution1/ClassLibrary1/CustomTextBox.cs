@@ -46,7 +46,7 @@ namespace ClassLibrary1
                     ItemRectangle);
             }
 
-            using (var brush = new SolidBrush(Color.White))
+            using (var brush = new SolidBrush(Color.Black))
             using (var font = new Font("Arial", 14, FontStyle.Regular))
             {
                 e.Graphics.DrawString(Text,
