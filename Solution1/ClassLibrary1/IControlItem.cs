@@ -10,6 +10,10 @@ namespace ClassLibrary1
 {
     public interface IControlItem
     {
-        void OnPaint(Rectangle area, Graphics graphics);
+        bool HasToRepaint();
+
+        void OnRepainted();
+
+        void OnPaint(Graphics graphics);
     }
 }

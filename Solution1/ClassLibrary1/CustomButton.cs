@@ -8,24 +8,75 @@ using System.Windows.Forms;
 
 namespace ClassLibrary1
 {
-    class CustomButton : IControlItem
+    public class CustomButton : IControlItem
     {
+        private bool shouldRepaint = false;
+
+        private Color CurrentBackgroundColor;
+
+        public Rectangle ItemRectangle { get; set; }
+
         public string Text { get; set; }
 
-        public Color BackgroundColor = Color.White;
+        public Color MainBackgroundColor = Color.White;
+
+        public Color HoverBackgroundColor = Color.White;
 
         public EventHandler OnMouseClick { get; set; }
 
-        public void OnPaint(Rectangle area, Graphics graphics)
+        public CustomButton()
+        {
+            this.CurrentBackgroundColor = MainBackgroundColor;
+        }
+
+        public void OnMouseMove(MouseEventArgs e)
+        {
+            var oldBackground = CurrentBackgroundColor;
+
+            if (ItemRectangle.Contains(e.Location))
+            {
+                CurrentBackgroundColor = HoverBackgroundColor;
+            }
+            else
+            {
+                CurrentBackgroundColor = MainBackgroundColor;
+            }
+
+            if (oldBackground != CurrentBackgroundColor)
+            {
+                shouldRepaint = true;
+            }
+        }
+
+        public void OnMouseLeave(EventArgs e) 
+        {
+            var oldBackground = CurrentBackgroundColor;
+            CurrentBackgroundColor = MainBackgroundColor;
+
+            if (oldBackground != CurrentBackgroundColor)
+            {
+                shouldRepaint = true;
+            }
+        }
+
+        public void HandleClickIfItCans(MouseEventArgs e)
+        {
+            if (ItemRectangle.Contains(e.X, e.Y))
+            {
+                OnMouseClick(this, e);
+            }
+        }
+
+        public void OnPaint(Graphics graphics)
         {
             graphics.FillRectangle(
-                new SolidBrush(BackgroundColor),
-                area);
+                new SolidBrush(CurrentBackgroundColor),
+                ItemRectangle);
 
             graphics.DrawString(Text,
                 new Font("Arial", 7, FontStyle.Regular),
                 new SolidBrush(Color.Black),
-                area,
+                ItemRectangle,
                 new StringFormat
                 {
                     Alignment = StringAlignment.Center
@@ -33,7 +84,17 @@ namespace ClassLibrary1
 
             graphics.DrawRectangle(
                 new Pen(Color.Gray, 2),
-                area);
+                ItemRectangle);
+        }
+
+        public bool HasToRepaint()
+        {
+            return shouldRepaint;
+        }
+
+        public void OnRepainted()
+        {
+            shouldRepaint = false;
         }
     }
 }

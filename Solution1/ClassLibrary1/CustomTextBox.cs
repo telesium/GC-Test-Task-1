@@ -10,6 +10,10 @@ namespace ClassLibrary1
 {
     class CustomTextBox : IControlItem
     {
+        private bool shouldRepaint = false;
+
+        public Rectangle ItemRectangle { get; set; }
+
         public string Text { get; set; }
 
         public HorizontalAlignment TextAlign { get; set; }
@@ -34,21 +38,31 @@ namespace ClassLibrary1
             return style;
         }
 
-        public void OnPaint(Rectangle area, Graphics graphics)
+        public void OnPaint(Graphics graphics)
         {
             graphics.FillRectangle(
                 new SolidBrush(Color.White),
-                area);
+                ItemRectangle);
 
             graphics.DrawString(Text,
                 new Font("Arial", 14, FontStyle.Regular),
                 new SolidBrush(Color.Black),
-                area,
+                ItemRectangle,
                 ConvertTextAlignToTextStyle());
 
             graphics.DrawRectangle(
                 new Pen(Color.Gray, 2),
-                area);
+                ItemRectangle);
+        }
+
+        public bool HasToRepaint()
+        {
+            return shouldRepaint;
+        }
+
+        public void OnRepainted()
+        {
+            shouldRepaint = false;
         }
     }
 }

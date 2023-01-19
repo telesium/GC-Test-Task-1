@@ -7,16 +7,15 @@ namespace ClassLibrary1
 {
     public class NumericUpDownLight : Control
     {
-        private int _value = 0;
-        private EventHandler _valueChanged = null;
-        private HorizontalAlignment _textAlign = HorizontalAlignment.Left;
-        private Color _mouseHoverBackColor = Color.Blue;
+        private int numericValue = 0;
+        private HorizontalAlignment alignmentValue = HorizontalAlignment.Left;
+        private Color mouseHoverBackColorValue = Color.Blue;
 
-        private readonly CustomTextBox TextBox = new CustomTextBox();
-        private readonly CustomButton ButtonUp = new CustomButton();
-        private readonly CustomButton ButtonDown = new CustomButton();
+        private CustomTextBox TextBox = new CustomTextBox();
+        private CustomButton ButtonUp = new CustomButton();
+        private CustomButton ButtonDown = new CustomButton();
 
-        private bool IsBackgroundChanged = false;
+        private Timer timer = null;
 
         [Browsable(false)]
         public override string Text { get; set; }
@@ -29,11 +28,12 @@ namespace ClassLibrary1
         {
             get
             {
-                return _value;
+                return numericValue;
             }
             set
             {
-                _value = value;
+                numericValue = value;
+                TextBox.Text = numericValue.ToString();
                 base.Invalidate();
             }
         }
@@ -42,17 +42,7 @@ namespace ClassLibrary1
         Category("Property Changed"),
         Description("ValueChanged event triggers after the value was changed")
         ]
-        public event EventHandler ValueChanged
-        {
-            add
-            {
-                _valueChanged = value;
-            }
-            remove
-            {
-                _valueChanged = null;
-            }
-        }
+        public event EventHandler ValueChanged;
 
         [
         Category("Appearance"),
@@ -62,11 +52,12 @@ namespace ClassLibrary1
         {
             get
             {
-                return _textAlign;
+                return alignmentValue;
             }
             set
             {
-                _textAlign = value;
+                alignmentValue = value;
+                TextBox.TextAlign = alignmentValue;
                 base.Invalidate();
             }
         }
@@ -79,116 +70,112 @@ namespace ClassLibrary1
         {
             get
             {
-                return _mouseHoverBackColor;
+                return mouseHoverBackColorValue;
             }
             set
             {
-                _mouseHoverBackColor = value;
+                mouseHoverBackColorValue = value;
+                ButtonUp.HoverBackgroundColor = mouseHoverBackColorValue;
+                ButtonDown.HoverBackgroundColor = mouseHoverBackColorValue;
+                base.Invalidate();
             }
         }
 
         public NumericUpDownLight()
         {
             DoubleBuffered = true;
+            this.timer = new Timer
+            {
+                Interval = 50,
+            };
+            this.timer.Tick += new EventHandler(this.OnTimerTick);
+            this.timer.Start();
+        }
+
+        private void OnTimerTick(object sender, EventArgs e)
+        {
+            bool shouldInvalidate = false;
+            
+            if (ButtonUp.HasToRepaint()) 
+            {
+                ButtonUp.OnRepainted();
+                shouldInvalidate = true;
+            } 
+            
+            if (ButtonDown.HasToRepaint())
+            {
+                ButtonDown.OnRepainted();
+                shouldInvalidate = true;
+            }
+
+            if (TextBox.HasToRepaint())
+            {
+                TextBox.OnRepainted();
+                shouldInvalidate = true;
+            }
+
+            if (shouldInvalidate)
+            {
+                base.Invalidate();
+            }
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
 
             TextBox = new CustomTextBox
             {
-                Text = _value.ToString(),
+                Text = Value.ToString(),
                 TextAlign = TextAlign,
+                ItemRectangle = GetRectangleForTextBox()
             };
 
             ButtonUp = new CustomButton
             {
                 Text = "▲",
-                OnMouseClick = this.IncrementValue
+                OnMouseClick = this.IncrementValue,
+                HoverBackgroundColor = MouseHoverBackColor,
+                ItemRectangle = GetRectangleForButtonUp()
             };
 
             ButtonDown = new CustomButton
             {
                 Text = "▼",
-                OnMouseClick = this.DecrementValue
+                OnMouseClick = this.DecrementValue,
+                HoverBackgroundColor = MouseHoverBackColor,
+                ItemRectangle = GetRectangleForButtonDown()
             };
         }
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
             base.OnMouseClick(e);
-
-            var upButtonRectangle = GetRectangleForButtonUp();
-            var downButtonRectangle = GetRectangleForButtonDown();
-
-            if (upButtonRectangle.Contains(e.Location))
-            {
-                ButtonUp.OnMouseClick(this, e);
-            }
-            else if (downButtonRectangle.Contains(e.Location))
-            {
-                ButtonDown.OnMouseClick(this, e);
-            }
-        }
-
-        private void UpdateTextBox(Graphics g)
-        {
-            TextBox.Text = _value.ToString();
-            TextBox.TextAlign = _textAlign;
-            TextBox.OnPaint(GetRectangleForTextBox(), g);
+            ButtonUp.HandleClickIfItCans(e);
+            ButtonDown.HandleClickIfItCans(e);
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
 
-            UpdateTextBox(e.Graphics);
-            ButtonUp.OnPaint(GetRectangleForButtonUp(), e.Graphics);
-            ButtonDown.OnPaint(GetRectangleForButtonDown(), e.Graphics);
+            TextBox.OnPaint(e.Graphics);
+            ButtonUp.OnPaint(e.Graphics);
+            ButtonDown.OnPaint(e.Graphics);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-
-            var upButtonRectangle = GetRectangleForButtonUp();
-            var downButtonRectangle = GetRectangleForButtonDown();
-
-            if (!IsBackgroundChanged)
-            {
-                if (upButtonRectangle.Contains(e.Location))
-                {
-                    ButtonUp.BackgroundColor = _mouseHoverBackColor;
-                    IsBackgroundChanged = true;
-                    base.Invalidate();
-                }
-                else if (downButtonRectangle.Contains(e.Location))
-                {
-                    ButtonDown.BackgroundColor = _mouseHoverBackColor;
-                    IsBackgroundChanged = true;
-                    base.Invalidate();
-                }
-            }
-
-            if (!upButtonRectangle.Contains(e.Location))
-            {
-                ButtonUp.BackgroundColor = Color.White;
-                IsBackgroundChanged = false;
-                base.Invalidate();
-            }
-                
-            if (!downButtonRectangle.Contains(e.Location))
-            {
-                ButtonDown.BackgroundColor = Color.White;
-                IsBackgroundChanged = false;
-                base.Invalidate();
-            }
+            ButtonUp.OnMouseMove(e);
+            ButtonDown.OnMouseMove(e);
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-
-            ButtonUp.BackgroundColor = Color.White;
-            ButtonDown.BackgroundColor = Color.White;
-            IsBackgroundChanged = false;
-            base.Invalidate();
+            ButtonUp.OnMouseLeave(e);
+            ButtonDown.OnMouseLeave(e);
         }
 
         private Rectangle GetRectangleForTextBox()
@@ -226,23 +213,23 @@ namespace ClassLibrary1
 
         private void IncrementValue(object sender, EventArgs e)
         {
-            this._value++;
+            this.Value++;
             base.Invalidate();
 
-            if (_valueChanged != null)
+            if (ValueChanged != null)
             {
-                _valueChanged(this, EventArgs.Empty);
+                ValueChanged(this, EventArgs.Empty);
             }
         }
 
         private void DecrementValue(object sender, EventArgs e)
         {
-            this._value--;
+            this.Value--;
             base.Invalidate();
 
-            if (_valueChanged != null)
+            if (ValueChanged != null)
             {
-                _valueChanged(this, EventArgs.Empty);
+                ValueChanged(this, EventArgs.Empty);
             }
         }
     }
