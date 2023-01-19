@@ -9,6 +9,7 @@ namespace ClassLibrary1
         private int _value = 0;
         private EventHandler _valueChanged = null;
         private HorizontalAlignment _textAlign = HorizontalAlignment.Left;
+        private Color MouseHoverBackColor = Color.Blue;
         
         private TextBox textBox = new TextBox();
         private Button buttonUp = new Button();
@@ -26,6 +27,11 @@ namespace ClassLibrary1
             this.buttonUp.Left = 169;
             this.buttonUp.Paint += new PaintEventHandler(this.buttonUp_Paint);
             this.buttonUp.Click += new EventHandler(this.IncrementValue);
+            this.buttonUp.FlatStyle = FlatStyle.Flat;
+            this.buttonUp.FlatAppearance.BorderColor = Color.Gray;
+            this.buttonUp.FlatAppearance.BorderSize = 1;
+            this.buttonUp.FlatAppearance.MouseOverBackColor = MouseHoverBackColor;
+
 
             this.buttonDown.Parent = this;
             this.buttonDown.Width = 30;
@@ -34,6 +40,10 @@ namespace ClassLibrary1
             this.buttonDown.Left = 169;
             this.buttonDown.Paint += new PaintEventHandler(this.buttonDown_Paint);
             this.buttonDown.Click += new EventHandler(this.DecrementValue);
+            this.buttonDown.FlatStyle = FlatStyle.Flat;
+            this.buttonDown.FlatAppearance.BorderColor = Color.Gray;
+            this.buttonDown.FlatAppearance.BorderSize = 1;
+            this.buttonDown.FlatAppearance.MouseOverBackColor = MouseHoverBackColor;
 
             this.textBox.Text = this._value.ToString();
             this.textBox.Font = new Font("Arial", 12, FontStyle.Regular);
@@ -76,6 +86,17 @@ namespace ClassLibrary1
                     new Point(16, 1),
                 }
             );
+        }
+        private void buttonUp_MouseHover(object sender, EventArgs e)
+        {
+            this.buttonUp.FlatAppearance.BorderColor = Color.Red;
+            this.buttonUp.FlatAppearance.BorderSize = 2;
+        }
+
+        private void buttonUp_MouseLeave(object sender, EventArgs e)
+        {
+            this.buttonUp.FlatAppearance.BorderColor = Color.White;
+            this.buttonUp.FlatAppearance.BorderSize = 2;
         }
 
         private void IncrementValue(object sender, EventArgs e)
