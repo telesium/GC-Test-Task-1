@@ -8,6 +8,7 @@ namespace ClassLibrary1
     {
         private int _value = 0;
         private EventHandler _valueChanged = null;
+        private HorizontalAlignment _textAlign = HorizontalAlignment.Left;
         
         private TextBox textBox = new TextBox();
         private Button buttonUp = new Button();
@@ -36,6 +37,7 @@ namespace ClassLibrary1
 
             this.textBox.Text = this._value.ToString();
             this.textBox.Font = new Font("Arial", 12, FontStyle.Regular);
+            this.textBox.TextAlign = _textAlign;
             this.textBox.Width = 170;
             this.textBox.Height = 29;
             this.textBox.Multiline = true;
